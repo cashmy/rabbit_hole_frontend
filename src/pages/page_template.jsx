@@ -12,31 +12,27 @@
 
 //#region [General imports]
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import {
   Box,
-  Fab,
-  Grid,
-  Paper,
-  Toolbar,
-  Tooltip,
-  Typography
+  Paper
 } from '@mui/material';
-import AddIcon from "@mui/icons-material/Add";
+import TitleBar from '../components/titleBar';
 //#endregion
 
 //#region [Customizable imports]
 // import {componentForm as DetailForm} from "./<ComponentForm>";
 //#endregion
 
-const componentTitle = "Component Title Goes Here";
-const searchText ="Search Text Goes Here";
-const addToolTip = "Add an item";
-const editToolTip = "Edit an item";
-const deleteToolTip = "Delete an item";
-const primaryColor = "#00bcd4";
-const secondaryColor = "#ff9800";
-const detailColor = "#ff9800";
+const componentTitle = "Component Title Goes Here*";
+// const searchText = "Search Text Goes Here";
+const addToolTip = "Add a new item";
+// const editToolTip = "Edit an item";
+// const deleteToolTip = "Delete an item";
+const primaryColor = "primary";
+// const backgroundColor = "#ff9800";
+// const detailColor = "#ff9800";
+
 
 // *** Styled Components ***
 const PageStyled = styled('div')(({ theme }) => ({
@@ -54,44 +50,7 @@ const PageStyled = styled('div')(({ theme }) => ({
       : theme.palette.getContrastText(theme.palette.grey[400]),
   padding: theme.spacing(0, 3),
 }));
-function TitleBar(props) {
-  const theme = useTheme();
-  return (
-    <Grid container>
-      <Grid item xs={12} paddingTop={theme.spacing(5)}>
-        <Paper
-          sx={{
-            padding: theme.spacing(2),
-            textAlign: "center",
-            color: theme.palette.text.secondary,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Toolbar>
-            <Typography variant="h4" id="titlebar">
-              {props.title}
-            </Typography>
-            <Tooltip title="Add an item">
-              <Fab
-                sx={{ position: "absolute", right: "1rem" }}
-                color="primary"
-                aria-label="add an item"
-                size="small"
-                onClick={() => {
-                  //   setOpenPopup(true);
-                  //   setRecordForEdit(null);
-                }}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-          </Toolbar>
-        </Paper>
-      </Grid>
-    </Grid>
-  );
-};
+
 const MainTable = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(3),
   marginRight: theme.spacing(7),
@@ -102,13 +61,25 @@ const MainTable = styled(Paper)(({ theme }) => ({
 // *** Main Component ***
 export default function PagePage() {
 
+  // * Event Handlers *
+  const handleAdd = () => {
+    //   setOpenPopup(true);
+    //   setRecordForEdit(null);
+    alert("Adding a record")
+  }
 
   return (
     <PageStyled id="pagePage">
       <Box sx={{ flexGrow: 1 }}>
-        
-        {/* //* Header Bar */}
-        <TitleBar title={componentTitle}/>
+
+        {/* //* Title Bar */}
+        <TitleBar 
+          componentTitle={componentTitle} 
+          addToolTip={addToolTip} 
+          handleAdd={handleAdd}
+          primaryColor={primaryColor}
+          // returnFab={true}
+        />
 
         {/* //* Main Table */}
         <MainTable>
