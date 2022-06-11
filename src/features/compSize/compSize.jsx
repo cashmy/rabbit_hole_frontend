@@ -25,7 +25,7 @@ export default function CompSize() {
                 width: refContainer.current.offsetWidth,
                 height: refContainer.current.offsetHeight,
             });
-            console.log("RefCurrent: ", refContainer.current);
+            // console.log("RefCurrent: ", refContainer.current);
         }
     }, []);
 

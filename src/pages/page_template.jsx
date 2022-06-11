@@ -12,25 +12,34 @@
 
 //#region [General imports]
 import * as React from 'react';
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import {
   Box,
   Paper
 } from '@mui/material';
 import TitleBar from '../components/titleBar';
+// Wrapped Components
+import Controls from '../components/controls/Controls';
+// import useTable from "../components/useTable";
 //#endregion
 
 //#region [Customizable imports]
-// import {componentForm as DetailForm} from "./<ComponentForm>";
+import PageForm from "./page_form";
+import PageDialog from './page_dialog';
 //#endregion
 
-const componentTitle = "Component Title Goes Here*";
+// import Button from '../components/controls/Button';
+
+const componentTitle = "** My First Component Title **";
+const detailTitle = "** Detail Title Goes Here **";
 // const searchText = "Search Text Goes Here";
 const addToolTip = "Add a new item";
 // const editToolTip = "Edit an item";
 // const deleteToolTip = "Delete an item";
-const primaryColor = "primary";
-// const backgroundColor = "#ff9800";
+const primaryColor = "info";     // can only be primary, secondary, error, warning, info, success, or neutral
+const secondaryColor = "secondary"; // can only be primary, secondary, error, warning, info, success, or neutral
+const backgroundColor = "#3f51b5";  // can be any color
 // const detailColor = "#ff9800";
 
 
@@ -61,24 +70,119 @@ const MainTable = styled(Paper)(({ theme }) => ({
 // *** Main Component ***
 export default function PagePage() {
 
-  // * Event Handlers *
+  // const [records, setRecords] = useState([])
+  const [loadData, setLoadData] = useState(true)
+  // const [isLoading, setIsLoading] = useState(false);
+  const [recordForEdit, setRecordForEdit] = useState(null);
+  const [filterFn, setFilterFn] = useState({ fn: items => { return items; } });
+  const [openPopup, setOpenPopup] = useState(false)
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: 'info' })
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+
+  // * Event Handlers * 
+  const handleSearch = e => {
+    let target = e.target;
+    // state can't store functions, so we are storing an object with the function internally defined.
+    setFilterFn({
+      fn: items => {
+        // target.value is the search box contents
+        if (target.value === "")
+          return items;
+        else
+          return items.filter(
+            (x) =>
+              x.lectureTopics
+                .toLowerCase()
+                .includes(target.value.toLowerCase()) ||
+              x.curriculumType.name
+                .toLowerCase()
+                .includes(target.value.toLowerCase()) ||
+              x.templateHeader.name
+                .toLowerCase()
+                .includes(target.value.toLowerCase()) ||
+              x.notes
+                .toLowerCase()
+                .includes(target.value.toLowerCase())
+          )
+      }
+    })
+  };
+  const openInPopup = item => {
+    setRecordForEdit(item)
+    setOpenPopup(true)
+  };
   const handleAdd = () => {
-    //   setOpenPopup(true);
-    //   setRecordForEdit(null);
-    alert("Adding a record")
+      setOpenPopup(true);
+      setRecordForEdit(null);
   }
+  const handleEdit = (record) => {
+    openInPopup(record)
+  };
+  const handleDelete = (themeId, id) => {
+    setConfirmDialog({
+      isOpen: true,
+      title:
+        "Are you sure you want to delete this Curriculum Theme and all of its Detail?",
+      subTitle: "You can't undo this action.",
+      onConfirm: () => {
+        onDelete(themeId, id);
+      },
+    })
+  };
+  const onDelete = (themeId, id) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    // CurriculumDetailService.deleteCurriculumDetail(themeId, id)
+    setLoadData(!loadData); // Request reload of data
+    setNotify({
+      isOpen: true,
+      message: "Record deleted",
+      type: "error",
+    });
+  };
+  const addOrEdit = (record, resetForm, close) => {
+    console.log("Editing detail with the following info: ", record)
+    debugger
+    if (record.id === 0) {
+      // CurriculumDetailService.addCurriculumDetail(record)
+      alert("Added")
+      resetForm()
+      setLoadData(true); // Request reload of data
+    }
+    else {
+      // CurriculumDetailService.updateCurriculumDetail(record)
+      alert("Updated")
+      setLoadData(true); // Request reload of data
+    }
+    if (close) {
+      resetForm()
+      setRecordForEdit(null)
+      setOpenPopup(false) // Close Popup modal
+    }
+
+    setNotify({
+      isOpen: true,
+      message: 'Submitted Successfully',
+      type: 'success'
+    })
+  };
 
   return (
     <PageStyled id="pagePage">
       <Box sx={{ flexGrow: 1 }}>
 
         {/* //* Title Bar */}
-        <TitleBar 
-          componentTitle={componentTitle} 
-          addToolTip={addToolTip} 
+        <TitleBar
+          componentTitle={componentTitle}
+          addFab={true}
+          // primaryColor={primaryColor}
           handleAdd={handleAdd}
-          primaryColor={primaryColor}
+          // addToolTip={addToolTip}
+          // secondaryColor={secondaryColor}
           // returnFab={true}
+          backgroundColor={backgroundColor}
         />
 
         {/* //* Main Table */}
@@ -87,7 +191,11 @@ export default function PagePage() {
         </MainTable>
 
         {/* //* Dialogs, Modals, & Popups */}
-
+        <PageDialog openPopup={openPopup} setOpenPopup={setOpenPopup} title={detailTitle} >
+            <PageForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+        </PageDialog>
+        <Controls.Notification notify={notify} setNotify={setNotify} /> 
+        <Controls.ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
       </Box>
     </PageStyled>
   );

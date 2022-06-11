@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 
 // * MUI Components
 import { styled, useTheme } from '@mui/material/styles';
@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import MuiAppBar from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
+import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -38,6 +39,15 @@ const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
+  backgroundColor:
+    theme.palette.mode === "dark"
+      ? '#090909'
+      : theme.palette.primary.dark,
+  color:
+    theme.palette.mode === "dark"
+      ? theme.palette.getContrastText('#090909')
+      : theme.palette.getContrastText(theme.palette.primary.dark),
+
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -45,6 +55,15 @@ const openedMixin = (theme) => ({
   overflowX: 'hidden',
 });
 const closedMixin = (theme) => ({
+  backgroundColor:
+    theme.palette.mode === "dark"
+      ? '#090909'
+      : theme.palette.primary.dark,
+  color:
+    theme.palette.mode === "dark"
+      ? theme.palette.getContrastText('#090909')
+      : theme.palette.getContrastText(theme.palette.primary.dark),
+
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -86,6 +105,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
+
     ...(open && {
       ...openedMixin(theme),
       '& .MuiDrawer-paper': openedMixin(theme),
@@ -120,9 +140,7 @@ export default function App(props) {
       <CssBaseline />
       {/* // * App Bar */}
       <AppBar position="fixed" display="flex"
-        sx={{
-
-        }}
+        sx={{}}
         open={open}>
         <Toolbar>
           <IconButton
@@ -155,7 +173,7 @@ export default function App(props) {
           {initialLogin === true && (
             <IconButton
               // className={classes.logOut}
-              sx={{position: 'absolute', right: '1rem'}}
+              sx={{ position: 'absolute', right: '1rem' }}
               color="inherit"
               onClick={handleMenuClose}
               size="large">
@@ -172,7 +190,6 @@ export default function App(props) {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
-
         <Divider />
         <List>
           {['Home', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
@@ -186,6 +203,7 @@ export default function App(props) {
               >
                 <ListItemIcon
                   sx={{
+                    color: 'white',
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
@@ -198,7 +216,6 @@ export default function App(props) {
             </ListItem>
           ))}
         </List>
-
         <Divider />
         <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
@@ -212,6 +229,7 @@ export default function App(props) {
               >
                 <ListItemIcon
                   sx={{
+                    color: 'white',
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
@@ -224,15 +242,14 @@ export default function App(props) {
             </ListItem>
           ))}
         </List>
-
       </Drawer>
 
       {/* // * Main Display / Routes */}
       <Box component="main" sx={{ flexGrow: 1 }}>
         <DrawerHeader /> {/* This component creates space for the AppBar so components rendered below will line up correctly*/}
 
-        <Box sx={{display: "flex"}} >
-        {/* <CompSize /> */}
+        <Box sx={{ display: "flex" }} >
+          {/* <CompSize /> */}
           <Routes>
             <Route path="/" element={<CompSize />} />
             <Route path="/template" element={<PageTemplate />} />

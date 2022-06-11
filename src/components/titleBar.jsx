@@ -25,11 +25,16 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export default function TitleBar(props) {
   const {
     componentTitle,
-    addToolTip,
+    
+    addFab,
     primaryColor,
+    addToolTip,
+    handleAdd,
+
+    returnFab,
     secondaryColor,
-    // detailColor,
-    returnFab
+    
+    backgroundColor,
   } = props
 
   const theme = useTheme();
@@ -39,6 +44,10 @@ export default function TitleBar(props) {
     navigate(-1);
   };
 
+  const defaultHandleAdd = () => {
+    alert("Adding a new item... \nNot yet implemented");
+  }
+
   return (
     <Grid container>
       <Grid item xs={12} paddingTop={theme.spacing(5)}>
@@ -46,20 +55,21 @@ export default function TitleBar(props) {
           sx={{
             padding: theme.spacing(2),
             textAlign: "center",
-            color: theme.palette.text.secondary,
+            backgroundColor: backgroundColor || theme.palette.background.paper,
+            color: theme.palette.getContrastText(backgroundColor || theme.palette.background.paper),
             display: "flex",
             flexDirection: "column",
           }}
         >
           <Toolbar>
             <Typography variant="h4" id="titlebar">
-              {componentTitle}
+              {componentTitle || "Component Title Goes Here"}
             </Typography>
 
             {returnFab && (
               <Tooltip title="Return to previous display">
                 <Fab
-                  sx={{ position: "absolute", right: theme.spacing(9) }}
+                  sx={{ position: "absolute", right: addFab ? theme.spacing(9) : theme.spacing(2) }}
                   color={secondaryColor || "secondary"}
                   aria-label="return to previous display"
                   size="small"
@@ -70,17 +80,20 @@ export default function TitleBar(props) {
               </Tooltip>
             )}
 
-            <Tooltip title={addToolTip}>
+            {addFab && (
+            <Tooltip title={addToolTip || "Add a new item"}>
               <Fab
                 sx={{ position: "absolute", right: theme.spacing(2) }}
                 color={primaryColor || "primary"}
-                aria-label={addToolTip}
+                aria-label={addToolTip || "Add a new item"}
                 size="small"
-                onClick={props.handleAdd}
+                onClick={handleAdd || defaultHandleAdd}
               >
                 <AddIcon />
               </Fab>
             </Tooltip>
+            )}
+
           </Toolbar>
         </Paper>
       </Grid>
