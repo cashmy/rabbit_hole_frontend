@@ -10,7 +10,7 @@
  * TODO - Add Detail form/modal in imports & Controls.popup
  */
 
-//#region [General imports]
+// #region [General imports]
 import * as React from 'react';
 import { useState } from 'react';
 import { styled } from '@mui/material/styles';
@@ -24,12 +24,12 @@ import Controls from '../components/controls/Controls';
 // import useTable from "../components/useTable";
 //#endregion
 
-//#region [Customizable imports]
+// #region [Customizable imports]
 import PageForm from "./page_form";
 import PageDialog from './page_dialog';
-//#endregion
+// #endregion
 
-// import Button from '../components/controls/Button';
+import ClrPicker from '../components/controls/ColorPicker';
 
 const componentTitle = "** My First Component Title **";
 const detailTitle = "** Detail Title Goes Here **";
@@ -112,8 +112,8 @@ export default function PagePage() {
     setOpenPopup(true)
   };
   const handleAdd = () => {
-      setOpenPopup(true);
-      setRecordForEdit(null);
+    setOpenPopup(true);
+    setRecordForEdit(null);
   }
   const handleEdit = (record) => {
     openInPopup(record)
@@ -192,9 +192,9 @@ export default function PagePage() {
 
         {/* //* Dialogs, Modals, & Popups */}
         <PageDialog openPopup={openPopup} setOpenPopup={setOpenPopup} title={detailTitle} >
-            <PageForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+          <PageForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
         </PageDialog>
-        <Controls.Notification notify={notify} setNotify={setNotify} /> 
+        <Controls.Notification notify={notify} setNotify={setNotify} />
         <Controls.ConfirmDialog confirmDialog={confirmDialog} setConfirmDialog={setConfirmDialog} />
       </Box>
     </PageStyled>

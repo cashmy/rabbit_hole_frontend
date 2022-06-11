@@ -11,7 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import MuiAppBar from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
-import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
