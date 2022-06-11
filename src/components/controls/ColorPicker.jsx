@@ -1,64 +1,58 @@
+/**
+ * @author Cash Myers
+ * @github [https://github.com/cashmy]
+ * @create date 2022-06-11 14:11:24
+ * @modify date 2022-06-11 14:11:24
+ * @desc   Custom component with a Text field and popup Colorpicker
+ *         Allows use of the color picker in a styled modal/dialog.
+ *         Uses two(2) helper functions, one(1) hook, and one (1) callback function.
+ *           - Uses the getContrastText helper function to get the contrast color of the background color.
+ *           - Uses the useClickOutside helper function to handle the click outside of the modal/dialog.
+ *           - Uses the useRef hook to handle the click outside of the modal/dialog.
+ *           - Uses the useCallback function to handle change and pass value to parent.
+ * @param {object} props
+ * @param {string} props.name    - field name     default: 'cpkColor'
+ * @param {string} props.label   - field label    default: 'Color'
+ * @param {string} props.value   - field value    REQUIRED
+ * @param {string} props.error   - field error    default: null
+ * @param {string} props.variant - field variant  default: 'filled'
+ * @param {function} props.onChange - callback function when color changes (REQUIRED)
+ */
+
+// #region [imports]
 import React, { Fragment, useState, useRef, useCallback } from 'react';
-import {
-    IconButton,
-    InputAdornment,
-    TextField,
-} from "@mui/material";
-import {
-    KeyboardArrowDown,
-    KeyboardArrowUp
-} from "@mui/icons-material"
-import useClickOutside from "../useClickOutside";
-import TextContrast from '../getTextContrast';
+import { IconButton, InputAdornment, TextField, } from "@mui/material";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import useClickOutside from "../../helpers/useClickOutside";
+import TextContrast from '../../helpers/getTextContrast';
 import { HexColorPicker } from 'react-colorful';
-import "./styles.css";
+//#endregion
 
-// const useStyles = makeStyles((theme) => ({
-    // popover: {
-    //     position: 'absolute',
-    //     top: 'calc(100% + 2px)',
-    //     left: '0px',
-    //     borderRadius: '9px',
-    //     boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)"
-    // },
-    // swatch: {
-    //     width: '28px',
-    //     height: '28px',
-    //     borderRadius: '8px',
-    //     border: '3px solid #fff',
-    //     boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1)',
-    //     cursor: 'pointer'
-    // },
-// }))
-
+// *** Main Component ***
 const ClrPicker = (props) => {
-
-    const { name, label, value, error = null, onChange, ...other } = props;
+    const { name, label, value, error = null, variant, onChange, ...other } = props;
     const popover = useRef();
     const [isOpen, toggle] = useState(false);
-    // const [value, setValue] = useState(props.value)
 
+    // * Event Handlers
     const handleClose = useCallback(() => toggle(false), []);
     useClickOutside(popover, handleClose);
-
     const handleChangeProp = (color, event) => {
-        console.log("HandleChangeProp:", color)
         let tempProp = {
             name: name,
             value: color
         }
         event = { ...event, target: tempProp }
         props.onChange(event)
-        // setValue(color)
     }
 
     return (
         <Fragment>
             <TextField
-                variant="filled"
+                variant={variant || "filled"}
                 size="small"
-                label={label}
-                name={name}
+                label={label || 'Color'}
+                name={name || 'cpkColor'}
                 value={value}
                 onChange={onChange}
                 {...(error && { error: true, helperText: error })}
@@ -77,9 +71,9 @@ const ClrPicker = (props) => {
                     )
                 }}
             />
-            <div className="picker">
+            <div>
                 {isOpen && (
-                    <div className="popover" ref={popover}>
+                    <div ref={popover} >
                         <HexColorPicker color={value} onChange={handleChangeProp} />
                     </div>
                 )}

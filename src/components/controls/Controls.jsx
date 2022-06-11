@@ -1,7 +1,7 @@
 import ActionButton from "./ActionButton";
 import Button from "./Button";
 import Checkbox from "./Checkbox";
-// import ClrPicker from "./ColorPicker";
+import ClrPicker from "./ColorPicker";
 import ConfirmDialog from "./ConfirmDialog";
 // import DatePicker from "./DatePicker";
 import Input from "./Input";
@@ -14,7 +14,7 @@ import Switch from "./Switch";
 const Controls = {
   ActionButton,
   Button,
-  // ClrPicker,
+  ClrPicker,
   Checkbox,
   ConfirmDialog,
   // DatePicker,
