@@ -20,20 +20,13 @@
 // #region [imports]
 import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
+import { TextField } from '@mui/material';
 import { LocalizationProvider, DatePicker as MuiDatePicker } from '@mui/x-date-pickers';
 // #endregion
 
 // *** Main Component ***
 export default function DatePicker(props) {
     const { name, label, value, error = null, onChange, variant, inputVariant, ...others } = props;
-
-    // * Event Handlers
-    // Converts the "Date" value to the Default Event parameter alleviating an error message
-    const convertToDefEventParam = (name, value) => ({
-        target: {
-            name, value
-        }
-    })
 
     return (
         <LocalizationProvider dateAdapter={DateFnsUtils}
@@ -46,8 +39,9 @@ export default function DatePicker(props) {
                 format="mm/dd/yyyy"
                 name={name || 'sampleDate'}
                 value={value}
-                onChange={date => onChange(convertToDefEventParam(name, date))}
+                onChange={(newValue) => onChange(newValue)}
                 {...(error && { error: true, helperText: error })}
+                renderInput = {(params) => <TextField {...params} />}
                 {...others}
             />
         </LocalizationProvider >
