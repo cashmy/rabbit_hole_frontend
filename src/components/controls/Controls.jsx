@@ -3,7 +3,7 @@ import Button from "./Button";
 import Checkbox from "./Checkbox";
 import ClrPicker from "./ColorPicker";
 import ConfirmDialog from "./ConfirmDialog";
-// import DatePicker from "./DatePicker";
+import DatePicker from "./DatePicker";
 import Input from "./Input";
 import Notification from "./Notification";
 import Popup from "./Popup";
@@ -17,7 +17,7 @@ const Controls = {
   ClrPicker,
   Checkbox,
   ConfirmDialog,
-  // DatePicker,
+  DatePicker,
   Input,
   Notification,
   Popup,
