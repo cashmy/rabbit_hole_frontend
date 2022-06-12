@@ -1,28 +1,29 @@
 import React, { useState } from "react";
-import { Table, TableHead, TableRow, TableCell, TablePagination, TableSortLabel } from "@mui/material";
+import { Table, TableHead, TableRow, TableCell, TablePagination, TableSortLabel, useTheme } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+// import makeStyles from '@mui/styles/makeStyles';
 
-const useStyles = makeStyles((theme) => ({
-  table: {
-    marginTop: theme.spacing(3),
-    "& thead th": {
-      fontWeight: "600",
-      color: props => props[1],
-      backgroundColor: props => props[0],
-    },
-    "& tbody td": {
-      fontWeight: "300",
-    },
-    "& tbody tr:hover": {
-      backgroundColor: theme.palette.action.hover,
-      cursor: "pointer",
-    },
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   table: {
+//     marginTop: theme.spacing(3),
+//     "& thead th": {
+//       fontWeight: "600",
+//       color: props => props[1],
+//       backgroundColor: props => props[0],
+//     },
+//     "& tbody td": {
+//       fontWeight: "300",
+//     },
+//     "& tbody tr:hover": {
+//       backgroundColor: theme.palette.action.hover,
+//       cursor: "pointer",
+//     },
+//   },
+// }));
 
 export default function useTable(records, columnCells, filterFn, ...props) {
-  const classes = useStyles(props);
+  // const classes = useStyles(props);
+  const theme = useTheme();
 
   const pages = [5, 10, 25, { label: "All", value: -1 }];
   const [page, setPage] = useState(0);
@@ -31,7 +32,8 @@ export default function useTable(records, columnCells, filterFn, ...props) {
   const [orderBy, setOrderBy] = useState();
 
   const TblContainer = (props) => (
-    <Table className={classes.table}
+    <Table 
+    // className={classes.table}
       stickyHeader={false || props.stickyHeader}
     //  style={{backgroundColor: "purple"}}
     >{props.children}</Table>
@@ -128,6 +130,7 @@ export default function useTable(records, columnCells, filterFn, ...props) {
 
     // The filterFn is passed in from the parent. It has the "fn" function defined.
     //   Into that function we pass the records and take the result to pass to the sorting functions
+ 
     return stableSort(
       filterFn.fn(records),
       getComparator(order, orderBy)

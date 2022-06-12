@@ -16,12 +16,23 @@ import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import {
   Box,
-  Paper
+  Grid,
+  InputAdornment,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
 } from '@mui/material';
+// Icons
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 import TitleBar from '../components/titleBar';
 // Wrapped Components
 import Controls from '../components/controls/Controls';
-// import useTable from "../components/useTable";
+import useTable from "../hooks/useTable";
 //#endregion
 
 // #region [Customizable imports]
@@ -29,11 +40,11 @@ import PageForm from "./page_form";
 import PageDialog from './page_dialog';
 // #endregion
 
-import ClrPicker from '../components/controls/ColorPicker';
-
+// *** Customized Texts ***
+// #region [Customizable texts]
 const componentTitle = "** My First Component Title **";
 const detailTitle = "** Detail Title Goes Here **";
-// const searchText = "Search Text Goes Here";
+const searchText = "Search Text Goes Here";
 const addToolTip = "Add a new item";
 // const editToolTip = "Edit an item";
 // const deleteToolTip = "Delete an item";
@@ -41,7 +52,7 @@ const primaryColor = "info";     // can only be primary, secondary, error, warni
 const secondaryColor = "secondary"; // can only be primary, secondary, error, warning, info, success, or neutral
 const backgroundColor = "#3f51b5";  // can be any color
 // const detailColor = "#ff9800";
-
+// #endregion
 
 // *** Styled Components ***
 const PageStyled = styled('div')(({ theme }) => ({
@@ -64,20 +75,35 @@ const MainTable = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(3),
   marginRight: theme.spacing(7),
   marginLeft: theme.spacing(7),
-  padding: theme.spacing(3)
+  padding: theme.spacing(3),
 }));
+
+// * Table Columns
+const columnCells = [
+  { id: 'name', label: 'Name' },
+]
 
 // *** Main Component ***
 export default function PagePage() {
 
-  // const [records, setRecords] = useState([])
+  const [records, setRecords] = useState([])
   const [loadData, setLoadData] = useState(true)
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState(null);
   const [filterFn, setFilterFn] = useState({ fn: items => { return items; } });
   const [openPopup, setOpenPopup] = useState(false)
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: 'info' })
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+  const theadColor = "purple"; // purple
+  const theadText = "#ffffff"; // white
+
+  // * Table Constants
+  const {
+    TblContainer,
+    TblHead,
+    TblPagination,
+    recordsAfterPagingAndSorting
+  } = useTable(records, columnCells, filterFn, theadColor, theadText);
 
   // * Event Handlers * 
   const handleSearch = e => {
@@ -187,7 +213,64 @@ export default function PagePage() {
 
         {/* //* Main Table */}
         <MainTable>
-          <h2> Main Table </h2>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Controls.Input
+                name="searchText"
+                label={searchText}
+                fullWidth={true}
+                InputProps={{
+                  startAdornment: (<InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>)
+                }}
+                onChange={handleSearch}
+              />
+            </Grid>
+            <Grid item xs={6} justifySelf="end">
+              <TblPagination
+                rowsPerPage={10}
+                rowsPerPageOptions={[5, 10, 20, { value: -1, label: 'All' }]}
+              />
+            </Grid>
+          </Grid>
+
+          <TableContainer>
+            <TblContainer stickyHeader={true}>
+              <TblHead />
+              <TableBody>
+                {isLoading ? (
+                  <TableRow key="999">
+                    <TableCell>
+                      <Typography> Loading ... </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  recordsAfterPagingAndSorting().map((record, index) => (
+                    <TableRow key={index}>
+                      {/* // TODO: Add table fields here */}
+
+                      <TableCell>
+                        <Controls.ActionButton
+                          color="darkcyan"
+                          size="large"
+                          onClick={() => handleEdit()}>
+                          <EditOutlinedIcon fontSize="small" />
+                        </Controls.ActionButton>
+                        <Controls.ActionButton
+                          color="red"
+                          onClick={() => handleDelete()}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </Controls.ActionButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )
+                }
+              </TableBody>
+            </TblContainer>
+          </TableContainer>
         </MainTable>
 
         {/* //* Dialogs, Modals, & Popups */}
