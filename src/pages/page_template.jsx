@@ -12,7 +12,7 @@
 
 // #region [General imports]
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import {
   Box,
@@ -63,15 +63,16 @@ const PageStyled = styled('div')(({ theme }) => ({
   flexGrow: '1',
   justifyContent: 'space-between',
   height: `95vh`,
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? theme.palette.background.default
-      : theme.palette.grey[400],
-  color:
-    theme.palette.mode === "dark"
-      ? theme.palette.getContrastText(theme.palette.background.default)
-      : theme.palette.getContrastText(theme.palette.grey[400]),
   padding: theme.spacing(0, 3),
+  // Use the next two styles only if there is no background image defined in App.js
+  // backgroundColor:
+  //   theme.palette.mode === "dark"
+  //     ? theme.palette.background.default
+  //     : theme.palette.grey[400],
+  // color:
+  //   theme.palette.mode === "dark"
+  //     ? theme.palette.getContrastText(theme.palette.background.default)
+  //     : theme.palette.getContrastText(theme.palette.grey[400]),
 }));
 
 const MainTable = styled(Paper)(({ theme }) => ({
@@ -90,6 +91,7 @@ const columnCells = [
 // *** Main Component ***
 export default function PagePage() {
 
+  // #region [State]
   const [records, setRecords] = useState([])
   const [loadData, setLoadData] = useState(true)
   const [isLoading, setIsLoading] = useState(false);
@@ -99,23 +101,24 @@ export default function PagePage() {
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: 'info' })
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
   const [archiveStatus, setArchiveStatus] = useState(false);
+  // #endregion
 
-
-  // useEffect(() => {
-    // const getCurriculumThemes = async (e) => {
-    //   try {
-    //     setIsLoading(true);
-    //     const response = await CurriculumThemesService
-    //       .getCurriculumThemesBySts(archiveStatus)
-    //       .then();
-    //     setRecords(response.data)
-    //     setIsLoading(false)
-    //   } catch (e) {
-    //     console.log("API call unsuccessful", e);
-    //   }
-    // }
-    // getCurriculumThemes();
-  // }, [archiveStatus, loadData]);
+  useEffect(() => {
+    const getTableData = async (e) => {
+      try {
+        setIsLoading(true);
+        // const response = await CurriculumThemesService
+        //   .getAllRecordsBySts(archiveStatus)
+        //   .getAllRecords()
+        //   .then();
+        // setRecords(response.data)
+        setIsLoading(false)
+      } catch (e) {
+        console.log("API call unsuccessful", e);
+      }
+    }
+    getTableData();
+  }, [archiveStatus, loadData]);
 
   // * Table Constants
   const {
@@ -286,7 +289,7 @@ export default function PagePage() {
                         {/* //& Edit */}
                         <Controls.ActionButton
                           color="darkcyan"
-                          tooltipText = {editToolTip}
+                          tooltipText={editToolTip}
                           size="large"
                           onClick={() => handleEdit(record)}
                         >
@@ -296,23 +299,23 @@ export default function PagePage() {
                         {/* //& Delete */}
                         <Controls.ActionButton
                           color="red"
-                          tooltipText = {deleteToolTip}
+                          tooltipText={deleteToolTip}
                           onClick={() => handleDelete(record)}
                         >
                           <DeleteIcon fontSize="small" />
                         </Controls.ActionButton>
 
                         {/* //& Archive */}
-                          <Controls.ActionButton
-                            color="darkorchid"
-                            tooltipText = {archiveToolTip}
-                            onClick={() => {
-                              handleArchive(record);
-                            }}
-                          >
-                            {!archiveStatus && <ArchiveIcon />}
-                            {archiveStatus && <UnarchiveIcon />}
-                          </Controls.ActionButton>
+                        <Controls.ActionButton
+                          color="darkorchid"
+                          tooltipText={archiveToolTip}
+                          onClick={() => {
+                            handleArchive(record);
+                          }}
+                        >
+                          {!archiveStatus && <ArchiveIcon />}
+                          {archiveStatus && <UnarchiveIcon />}
+                        </Controls.ActionButton>
                       </TableCell>
                     </TableRow>
                   ))

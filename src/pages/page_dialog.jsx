@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useTheme } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+// import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 // import FormControlLabel from '@mui/material/FormControlLabel';
@@ -18,24 +18,23 @@ import CloseIcon from '@mui/icons-material/Close';
 // #endregion
 
 export default function PageDialog(props) {
+
+  // #region [Local State]
   const theme = useTheme();
   const { title, children, openPopup, setOpenPopup, fullWidth } = props
   const [maxWidth, setMaxWidth] = React.useState('md');
+  // #endregion
 
+  // * Event Handlers
   const handleClose = () => {
     setOpenPopup(false);
   };
-
   const handleMaxWidthChange = (event) => {
     setMaxWidth(
       // @ts-expect-error autofill of arbitrary value is not handled.
       event.target.value,
     );
   };
-
-  // const handleFullWidthChange = (event) => {
-  //   setFullWidth(event.target.checked);
-  // };
 
   return (
     <React.Fragment>

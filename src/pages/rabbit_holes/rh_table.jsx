@@ -9,7 +9,7 @@
 // #region [General imports]
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import {
   Box,
   Grid,
@@ -26,7 +26,9 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from '@mui/icons-material/Delete';
+import DoneIcon from '@mui/icons-material/Done';
 import SearchIcon from '@mui/icons-material/Search';
+import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import TitleBar from '../../components/titleBar';
 // Wrapped Components
 import Controls from '../../components/controls/Controls';
@@ -48,6 +50,7 @@ const searchText = "Search by Name, Type, or Description";
 const addToolTip = "Add a new item";
 const editToolTip = "Edit an item";
 const deleteToolTip = "Delete an item";
+const doneToolTip = "Complete an item";
 const archiveToolTip = "Archive an item";
 const backgroundColor = "#3f51b5";  // can be any color
 // const primaryColor = "info";     // can only be primary, secondary, error, warning, info, success, or neutral
@@ -62,17 +65,16 @@ const PageStyled = styled('div')(({ theme }) => ({
   flexGrow: '1',
   justifyContent: 'space-between',
   height: `95vh`,
-  backgroundColor:
-    theme.palette.mode === "dark"
-      ? theme.palette.background.default
-      : theme.palette.grey[400],
-  color:
-    theme.palette.mode === "dark"
-      ? theme.palette.getContrastText(theme.palette.background.default)
-      : theme.palette.getContrastText(theme.palette.grey[400]),
+  // backgroundColor:
+  //   theme.palette.mode === "dark"
+  //     ? theme.palette.background.default
+  //     : theme.palette.grey[400],
+  // color:
+  //   theme.palette.mode === "dark"
+  //     ? theme.palette.getContrastText(theme.palette.background.default)
+  //     : theme.palette.getContrastText(theme.palette.grey[400]),
   padding: theme.spacing(0, 3),
 }));
-
 const MainTable = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(3),
   marginRight: theme.spacing(7),
@@ -97,6 +99,7 @@ const columnCells = [
 export default function RH_Table() {
 
   // #region [State]
+  const theme = useTheme();
   const [records, setRecords] = useState([])
   const [loadData, setLoadData] = useState(true)
   const [isLoading, setIsLoading] = useState(false);
@@ -131,7 +134,7 @@ export default function RH_Table() {
     TblHead,
     TblPagination,
     recordsAfterPagingAndSorting
-  } = useTable(records, columnCells, filterFn, );
+  } = useTable(records, columnCells, filterFn,);
 
   // * Event Handlers * 
   const handleSearch = e => {
@@ -170,6 +173,10 @@ export default function RH_Table() {
     setRecordForEdit(null);
   }
   const handleEdit = (record) => {
+    openInPopup(record)
+  };
+  const handlesolution = (record) => {
+    // TODO: Implement SECOND popup window for solution
     openInPopup(record)
   };
   const handleDelete = (themeId, id) => {
@@ -229,9 +236,18 @@ export default function RH_Table() {
       type: "success",
     });
   };
+  const handleComplete = (item) => {
+    // CurriculumThemesService.patchCurriculumThemeSts(item.id, !item.completed)
+    setLoadData(!loadData); // Request reload of data
+    setNotify({
+      isOpen: true,
+      message: "Completion status changed",
+      type: "success",
+    });
+  };
 
   return (
-    <PageStyled id="pagePage">
+    <PageStyled id="rhTable">
       <Box sx={{ flexGrow: 1 }}>
 
         {/* //* Title Bar */}
@@ -295,10 +311,30 @@ export default function RH_Table() {
 
                       {/* // *Actions */}
                       <TableCell>
+                        {/* //& Solution */}
+                        <Controls.ActionButton
+                          color={theme.palette.secondary.main}
+                          tooltipText={doneToolTip}
+                          size="large"
+                          onClick={() => handlesolution(record)}
+                        >
+                          <EmojiObjectsIcon fontSize="small" />
+                        </Controls.ActionButton>
+
+                        {/* //& Done */}
+                        <Controls.ActionButton
+                          color="darkorange"
+                          tooltipText={doneToolTip}
+                          size="large"
+                          onClick={() => handleComplete(record)}
+                        >
+                          <DoneIcon fontSize="small" />
+                        </Controls.ActionButton>
+
                         {/* //& Edit */}
                         <Controls.ActionButton
                           color="darkcyan"
-                          tooltipText = {editToolTip}
+                          tooltipText={editToolTip}
                           size="large"
                           onClick={() => handleEdit(record)}
                         >
@@ -308,25 +344,23 @@ export default function RH_Table() {
                         {/* //& Delete */}
                         <Controls.ActionButton
                           color="red"
-                          tooltipText = {deleteToolTip}
+                          tooltipText={deleteToolTip}
                           onClick={() => handleDelete(record)}
                         >
                           <DeleteIcon fontSize="small" />
                         </Controls.ActionButton>
-   
 
                         {/* //& Archive */}
-
-                          <Controls.ActionButton
-                            color="darkorchid"
-                            tooltipText = {archiveToolTip}
-                            onClick={() => {
-                              handleArchive(record);
-                            }}
-                          >
-                            {!archiveStatus && <ArchiveIcon />}
-                            {archiveStatus && <UnarchiveIcon />}
-                          </Controls.ActionButton>
+                        <Controls.ActionButton
+                          color="darkorchid"
+                          tooltipText={archiveToolTip}
+                          onClick={() => {
+                            handleArchive(record);
+                          }}
+                        >
+                          {!archiveStatus && <ArchiveIcon />}
+                          {archiveStatus && <UnarchiveIcon />}
+                        </Controls.ActionButton>
 
                       </TableCell>
                     </TableRow>

@@ -1,3 +1,12 @@
+/**
+ * @author Cash Myers
+ * @github [https://github.com/cashmy]
+ * @create date 2022-06-12 22:35:30
+ * @modify date 2022-06-12 22:35:30
+ * @desc Main Application/Component
+ */
+
+// #region [imports]
 import * as React from 'react';
 import { useState } from 'react';
 
@@ -11,6 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import MuiAppBar from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
+import MuiPaper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -25,18 +35,22 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+
+// TODO - Replace with correct images for this project
+import BackgroundImage from "./assets/images/bg-image-dark.png";
+import BackgroundImageLight from "./assets/images/bg-image-light.png";
+
 // React Router
 import { Routes, Route } from 'react-router-dom';
 // Router Components
-// import { HomePage } from './pages/Home';
-// import { PageTwo } from './pages/Page2';
 import CompSize from './features/compSize/compSize'
 import PageTemplate from './pages/page_template';
+
 import RH_Table from './pages/rabbit_holes/rh_table';
+// #endregion
 
 // * Styled Components
 const drawerWidth = 240;
-
 const openedMixin = (theme) => ({
   width: drawerWidth,
   backgroundColor:
@@ -116,14 +130,27 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
   }),
 );
+const BackgroundPaper = styled(MuiPaper)(({ theme }) => ({
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "center center",
+  backgroundSize: "cover",
+  backgroundAttachment: "fixed",
+  height: "100vh",
+  backgroundImage: theme.palette.mode === "dark"
+    ? `url(${BackgroundImage})`
+    : `url(${BackgroundImageLight})`,
+}));
 
 // * App Component
 export default function App(props) {
+  // #region [ State, Local Variables ]
   const { darkMode, setDarkMode } = props;
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [initialLogin, setInitialLogin] = useState(true);
+  // #endregion
 
+  // * Event Handlers
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -245,20 +272,21 @@ export default function App(props) {
       </Drawer>
 
       {/* // * Main Display / Routes */}
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <DrawerHeader /> {/* This component creates space for the AppBar so components rendered below will line up correctly*/}
+      <Box component="main" sx={{ flexGrow: 1}} >
+        <BackgroundPaper>
+          <DrawerHeader /> {/* This component creates space for the AppBar so components rendered below will line up correctly*/}
 
-        <Box sx={{ display: "flex" }} >
-          {/* <CompSize /> */}
-          <Routes>
-            <Route path="/" element={<CompSize />} />
-            <Route path="/template" element={<PageTemplate />} />
-            <Route path="/rh_table" element={<RH_Table />} />
-            {/* <Route path="/" element={<HomePage />} /> */}
-            {/* <Route path="/page2" element={<PageTwo />} /> */}
-          </Routes>
-        </Box>
+          <Box sx={{ display: "flex" }} >
+            <Routes>
+              <Route path="/" element={<CompSize />} />
+              <Route path="/template" element={<PageTemplate />} />
+              <Route path="/rh_table" element={<RH_Table />} />
+              {/* <Route path="/" element={<HomePage />} /> */}
+              {/* <Route path="/page2" element={<PageTwo />} /> */}
+            </Routes>
+          </Box>
+        </BackgroundPaper>
       </Box>
-    </Box>
+    </Box >
   )
 }
