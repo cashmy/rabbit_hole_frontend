@@ -26,6 +26,8 @@ import {
   Typography,
 } from '@mui/material';
 // Icons
+import ArchiveIcon from "@mui/icons-material/Archive";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
@@ -46,8 +48,9 @@ const componentTitle = "** My First Component Title **";
 const detailTitle = "** Detail Title Goes Here **";
 const searchText = "Search Text Goes Here";
 const addToolTip = "Add a new item";
-// const editToolTip = "Edit an item";
-// const deleteToolTip = "Delete an item";
+const editToolTip = "Edit an item";
+const deleteToolTip = "Delete an item";
+const archiveToolTip = "Archive an item";
 const primaryColor = "info";     // can only be primary, secondary, error, warning, info, success, or neutral
 const secondaryColor = "secondary"; // can only be primary, secondary, error, warning, info, success, or neutral
 const backgroundColor = "#3f51b5";  // can be any color
@@ -80,7 +83,8 @@ const MainTable = styled(Paper)(({ theme }) => ({
 
 // * Table Columns
 const columnCells = [
-  { id: 'name', label: 'Name' },
+  { id: 'fieldName', label: 'fieldLable' },
+  { id: 'actions', label: 'Actions', disableSorting: true },
 ]
 
 // *** Main Component ***
@@ -94,8 +98,24 @@ export default function PagePage() {
   const [openPopup, setOpenPopup] = useState(false)
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: 'info' })
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
-  const theadColor = "purple"; // purple
-  const theadText = "#ffffff"; // white
+  const [archiveStatus, setArchiveStatus] = useState(false);
+
+
+  // useEffect(() => {
+    // const getCurriculumThemes = async (e) => {
+    //   try {
+    //     setIsLoading(true);
+    //     const response = await CurriculumThemesService
+    //       .getCurriculumThemesBySts(archiveStatus)
+    //       .then();
+    //     setRecords(response.data)
+    //     setIsLoading(false)
+    //   } catch (e) {
+    //     console.log("API call unsuccessful", e);
+    //   }
+    // }
+    // getCurriculumThemes();
+  // }, [archiveStatus, loadData]);
 
   // * Table Constants
   const {
@@ -103,7 +123,7 @@ export default function PagePage() {
     TblHead,
     TblPagination,
     recordsAfterPagingAndSorting
-  } = useTable(records, columnCells, filterFn, theadColor, theadText);
+  } = useTable(records, columnCells, filterFn);
 
   // * Event Handlers * 
   const handleSearch = e => {
@@ -136,6 +156,9 @@ export default function PagePage() {
   const openInPopup = item => {
     setRecordForEdit(item)
     setOpenPopup(true)
+  };
+  const handleToggle = () => {
+    setArchiveStatus(!archiveStatus);
   };
   const handleAdd = () => {
     setOpenPopup(true);
@@ -194,6 +217,15 @@ export default function PagePage() {
       type: 'success'
     })
   };
+  const handleArchive = (item) => {
+    // CurriculumThemesService.patchCurriculumThemeSts(item.id, !archiveStatus)
+    setLoadData(!loadData); // Request reload of data
+    setNotify({
+      isOpen: true,
+      message: "Archive status changed",
+      type: "success",
+    });
+  };
 
   return (
     <PageStyled id="pagePage">
@@ -203,9 +235,9 @@ export default function PagePage() {
         <TitleBar
           componentTitle={componentTitle}
           addFab={true}
-          // primaryColor={primaryColor}
           handleAdd={handleAdd}
-          // addToolTip={addToolTip}
+          addToolTip={addToolTip}
+          // primaryColor={primaryColor}
           // secondaryColor={secondaryColor}
           // returnFab={true}
           backgroundColor={backgroundColor}
@@ -251,18 +283,36 @@ export default function PagePage() {
                       {/* // TODO: Add table fields here */}
 
                       <TableCell>
+                        {/* //& Edit */}
                         <Controls.ActionButton
                           color="darkcyan"
+                          tooltipText = {editToolTip}
                           size="large"
-                          onClick={() => handleEdit()}>
+                          onClick={() => handleEdit(record)}
+                        >
                           <EditOutlinedIcon fontSize="small" />
                         </Controls.ActionButton>
+
+                        {/* //& Delete */}
                         <Controls.ActionButton
                           color="red"
-                          onClick={() => handleDelete()}
+                          tooltipText = {deleteToolTip}
+                          onClick={() => handleDelete(record)}
                         >
                           <DeleteIcon fontSize="small" />
                         </Controls.ActionButton>
+
+                        {/* //& Archive */}
+                          <Controls.ActionButton
+                            color="darkorchid"
+                            tooltipText = {archiveToolTip}
+                            onClick={() => {
+                              handleArchive(record);
+                            }}
+                          >
+                            {!archiveStatus && <ArchiveIcon />}
+                            {archiveStatus && <UnarchiveIcon />}
+                          </Controls.ActionButton>
                       </TableCell>
                     </TableRow>
                   ))
