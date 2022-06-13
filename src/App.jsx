@@ -32,6 +32,7 @@ import { Routes, Route } from 'react-router-dom';
 // import { PageTwo } from './pages/Page2';
 import CompSize from './features/compSize/compSize'
 import PageTemplate from './pages/page_template';
+import RH_Table from './pages/rabbit_holes/rh_table';
 
 // * Styled Components
 const drawerWidth = 240;
@@ -252,6 +253,7 @@ export default function App(props) {
           <Routes>
             <Route path="/" element={<CompSize />} />
             <Route path="/template" element={<PageTemplate />} />
+            <Route path="/rh_table" element={<RH_Table />} />
             {/* <Route path="/" element={<HomePage />} /> */}
             {/* <Route path="/page2" element={<PageTwo />} /> */}
           </Routes>
