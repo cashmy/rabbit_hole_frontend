@@ -1,27 +1,8 @@
 import React, { useState } from "react";
 import { Table, TableHead, TableRow, TableCell, TablePagination, TableSortLabel, useTheme } from "@mui/material";
+import TextContrast from '../helpers/getTextContrast';
 
-// import makeStyles from '@mui/styles/makeStyles';
-
-// const useStyles = makeStyles((theme) => ({
-//   table: {
-//     marginTop: theme.spacing(3),
-//     "& thead th": {
-//       fontWeight: "600",
-//       color: props => props[1],
-//       backgroundColor: props => props[0],
-//     },
-//     "& tbody td": {
-//       fontWeight: "300",
-//     },
-//     "& tbody tr:hover": {
-//       backgroundColor: theme.palette.action.hover,
-//       cursor: "pointer",
-//     },
-//   },
-// }));
-
-export default function useTable(records, columnCells, filterFn, ...props) {
+export default function useTable(records, columnCells, filterFn, theadColor, ...props) {
   // const classes = useStyles(props);
   const theme = useTheme();
 
@@ -32,10 +13,26 @@ export default function useTable(records, columnCells, filterFn, ...props) {
   const [orderBy, setOrderBy] = useState();
 
   const TblContainer = (props) => (
-    <Table 
-    // className={classes.table}
+    <Table
+      sx={{
+        marginTop: theme.spacing(3),
+        "& thead th": {
+          fontWeight: "600",
+          backgroundColor: theadColor ? theadColor : theme.palette.background.default,
+          color: theadColor 
+            ? TextContrast.getTextContrast(theadColor)
+            : theme.palette.getContrastText(theme.palette.background.default),
+        },
+        "& tbody td": {
+          fontWeight: "300",
+        },
+        "& tbody tr:hover": {
+          backgroundColor: theme.palette.action.hover,
+          cursor: "pointer",
+        },
+      }}
+      // className={classes.table}
       stickyHeader={false || props.stickyHeader}
-    //  style={{backgroundColor: "purple"}}
     >{props.children}</Table>
   );
 
@@ -47,7 +44,9 @@ export default function useTable(records, columnCells, filterFn, ...props) {
     };
 
     return (
-      <TableHead>
+      <TableHead
+        style={{ backgroundColor: "purple" }}
+      >
         <TableRow>
           {columnCells.map((columnCell) => (
             <TableCell
@@ -130,7 +129,7 @@ export default function useTable(records, columnCells, filterFn, ...props) {
 
     // The filterFn is passed in from the parent. It has the "fn" function defined.
     //   Into that function we pass the records and take the result to pass to the sorting functions
- 
+
     return stableSort(
       filterFn.fn(records),
       getComparator(order, orderBy)
